@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  laravel:
+    build: 
+      context: ./laravel
+      dockerfile: dockerfile.prod
+    image: nadojba/laravel:prod
+    container_name: laravel
+
+    networks:
+      - laranet
+    command: /bin/sh -c "chmod -R 775 /var/www/storage && chown -R www-data:www-data /var/www/storage && php-fpm"
+    volumes:
+      - ./laravel/www:/var/www
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: dockerfile.prod
+    image: nadojba/nginx:prod
+    container_name: nginx
+    networks:
+      - laranet
+    ports:
+      - "8080:80"
+
+networks:
+  laranet:
